@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title></title>
+        <title>U2F Dummy Client/Server</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -22,7 +22,7 @@
         <!-- Add your site or application content here -->
         <p>U2F Dummy</p>
 
-        <form id="register" name="enroll-form" method="post">
+        <form id="register" name="enroll-form" method="post" action="form.php">
             <input type="hidden" name="mode" value="enroll"/>
             <input type="text" name="username" placeholder="Username" autofocus="autofocus" required/>
             <input type="password" name="password" placeholder="Password" required/>

@@ -1,8 +1,15 @@
 $(function(){
+
+    $.ajaxSetup({
+        beforeSend: function() {
+            alert('sending...');
+        }
+    });
+
     // Variable to hold request
     var request;
 
-// Bind to the submit event of our form
+    // Bind to the submit event of our form
     $("#register").submit(function(event){
 
         // Prevent default posting of form - put here to work in case of errors
