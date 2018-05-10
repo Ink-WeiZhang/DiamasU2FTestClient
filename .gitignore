@@ -143,6 +143,7 @@ modules.xml
 # *.ipr
 
 # Sonarlint plugin
+.idea/
 
 
 # End of https://www.gitignore.io/api/phpstorm,webstorm,intellij+iml
