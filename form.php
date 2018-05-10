@@ -26,7 +26,7 @@ $challenge->clientHash = session_id();
 $challenge->useCounter = $useCounter;
 
 
-header('Content-Type: application/json');
+header('Content-Type: application/json;charset=utf-8');
 $challengeJson = json_encode($challenge);
 echo $challengeJson;
 exit();
