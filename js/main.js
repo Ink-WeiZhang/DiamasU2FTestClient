@@ -1,10 +1,5 @@
 $(function(){
-
-    $.ajaxSetup({
-        beforeSend: function() {
-            alert('sending...');
-        }
-    });
+    
 
     // Variable to hold request
     var request;
