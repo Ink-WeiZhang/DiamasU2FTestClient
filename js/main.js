@@ -40,6 +40,7 @@ $(function(){
             // Log a message to the console
             console.log("Hooray, it worked!");
             console.log(response);
+            alert(response);
         });
 
         // Callback handler that will be called on failure
