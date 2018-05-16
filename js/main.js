@@ -40,7 +40,8 @@ $(function(){
             // Log a message to the console
             console.log("Hooray, it worked!");
             console.log(response);
-            alert(response);
+            console.log(JSON.stringify(response));
+            $('#qrcode').qrcode(JSON.stringify(response)); //Only takes string input
         });
 
         // Callback handler that will be called on failure
