@@ -22,17 +22,19 @@
         <!-- Add your site or application content here -->
         <p>U2F Dummy</p>
 
-        <form id="register" name="enroll-form" method="post" action="form.php">
+        <form id="enroll" name="enroll-form" method="post" action="form.php">
             <input type="hidden" name="mode" value="enroll"/>
+            <input type="hidden" name="appid" value=""/>
             <input type="text" name="username" placeholder="Username" autofocus="autofocus" required/>
             <input type="password" name="password" placeholder="Password" required/>
             <br />
             <input type="submit" class="btn btn-success" value="Register" />
         </form>
 
-        <form id="auth" name="sign-form" method="post">
+        <form id="sign" name="sign-form" method="post">
             <div class="span6">
                 <input type="hidden" name="mode" value="sign"/>
+                <input type="hidden" name="appid" value=""/>
                 <input type="text" name="username" placeholder="Username" autofocus="autofocus" required/>
                 <input type="password" name="password" placeholder="Password" required/>
                 <br />
