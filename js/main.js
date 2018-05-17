@@ -11,6 +11,7 @@ $(function(){
         event.preventDefault();
 
         $("#qrcode").css("display", "none");
+        $("#qrcode").empty();
         $(".loader").css("display", "block");
 
         // Abort any pending request
@@ -77,6 +78,7 @@ $(function(){
         event.preventDefault();
 
         $("#qrcode").css("display", "none");
+        $("#qrcode").empty();
         $(".loader").css("display", "block");
 
         // Abort any pending request
