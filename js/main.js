@@ -3,17 +3,22 @@ $(function(){
 
     // Variable to hold request
     var request;
-    
+
     // Bind to the submit event of our form
     $("#enroll").submit(function(event){
 
         // Prevent default posting of form - put here to work in case of errors
         event.preventDefault();
 
+        $("#qrcode").css("display", "none");
+        $("#qrcode").empty();
+        $(".loader").css("display", "block");
+
         // Abort any pending request
         if (request) {
             request.abort();
         }
+
         // setup some local variables
         var $form = $(this);
 
@@ -42,10 +47,11 @@ $(function(){
 
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
-            // Log a message to the console
-            console.log("Registration Executed");
-            console.log(response);
-            alert(response);
+            $(".loader").css("display", "none");
+            $("#qrcode").css("display", "block");
+            console.log("Hooray, it worked!");
+            console.log(JSON.stringify(response));
+            $('#qrcode').qrcode(JSON.stringify(response)); //Only takes string input
         });
 
         // Callback handler that will be called on failure
@@ -72,6 +78,7 @@ $(function(){
         event.preventDefault();
 
         $("#qrcode").css("display", "none");
+        $("#qrcode").empty();
         $(".loader").css("display", "block");
 
         // Abort any pending request
