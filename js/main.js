@@ -71,6 +71,9 @@ $(function(){
         // Prevent default posting of form - put here to work in case of errors
         event.preventDefault();
 
+        $("#qrcode").css("display", "none");
+        $(".loader").css("display", "block");
+
         // Abort any pending request
         if (request) {
             request.abort();
@@ -102,10 +105,11 @@ $(function(){
 
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
-            // Log a message to the console
-            console.log("Login authentication executed");
-            console.log(response);
-            alert(response);
+            $(".loader").css("display", "none");
+            $("#qrcode").css("display", "block");
+            console.log("Hooray, it worked!");
+            console.log(JSON.stringify(response));
+            $('#qrcode').qrcode(JSON.stringify(response)); //Only takes string input
         });
 
         // Callback handler that will be called on failure
