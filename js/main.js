@@ -4,21 +4,20 @@ $(function(){
     // Variable to hold request
     var request;
 
-
-    $("#qrcode").css("display", "none");
-    $(".loader").css("display", "block");
-
-
     // Bind to the submit event of our form
     $("#enroll").submit(function(event){
 
         // Prevent default posting of form - put here to work in case of errors
         event.preventDefault();
 
+        $("#qrcode").css("display", "none");
+        $(".loader").css("display", "block");
+
         // Abort any pending request
         if (request) {
             request.abort();
         }
+
         // setup some local variables
         var $form = $(this);
 
@@ -76,6 +75,9 @@ $(function(){
 
         // Prevent default posting of form - put here to work in case of errors
         event.preventDefault();
+
+        $("#qrcode").css("display", "none");
+        $(".loader").css("display", "block");
 
         // Abort any pending request
         if (request) {
