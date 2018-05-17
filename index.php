@@ -39,7 +39,7 @@
                 <input type="submit" class="btn btn-success" value="Login" />
             </div>
         </form>
-
+        <div class="loader"></div>
         <div id="qrcode"></div>
 
         <script src="js/vendor/modernizr-3.5.0.min.js"></script>
