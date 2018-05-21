@@ -38,12 +38,29 @@ $(function(){
         // Disabled form elements will not be serialized.
         $inputs.prop("disabled", true);
 
-        // Fire off the request to /form.php
-        request = $.ajax({
-            url: "/form.php",
-            type: "post",
-            data: serializedData
-        });
+        // Construct Request Body
+        var settings = {
+            async: true,
+            crossDomain: true,
+            url: "https://35.233.128.50",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Cache-Control": "no-cache",
+            },
+            processData: false,
+            data: "{\n\t\"jsonrpc\" : \"2.0\",\n\t\"method\" : \"eth_sessionStart\",\n\t\"params\" : [],\n\t\"id\" : 74\n}"
+        }
+
+        // // Fire off the request to /form.php
+        // request = $.ajax({
+        //     url: "/form.php",
+        //     type: "post",
+        //     data: serializedData
+        // });
+
+        request = $.ajax(settings);
 
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR){
