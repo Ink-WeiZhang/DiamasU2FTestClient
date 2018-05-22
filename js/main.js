@@ -1,10 +1,11 @@
 $(function(){
 
 
-    // Variable to hold request
-    var request;
+    // Variables to hold requests
+    var getSessionIDRequest;
+    var getChallengeRequest;
 
-    // Bind to the submit event of our form
+    // Registration Event
     $("#enroll").submit(function(event){
 
         // Prevent default posting of form - put here to work in case of errors
@@ -15,20 +16,23 @@ $(function(){
         $(".loader").css("display", "block");
 
         // Abort any pending request
-        if (request) {
-            request.abort();
+        if (getChallengeRequest) {
+            getChallengeRequest.abort();
+        }
+        if (getSessionIDRequest) {
+            getSessionIDRequest.abort();
         }
 
-        // setup some local variables
+        // Local Variables
         var $form = $(this);
+        var sessionID;
 
         // Let's select and cache all the fields
         var $appid = $form.find("[name='appid']");
         $appid[0].value = window.location.protocol + "//" + window.location.host + "/";
-        
         var $inputs = $form.find("[name='username'],[name='mode'],[name='appid']");
+        var $username = $form.find("[name='username']");
         console.info($inputs);
-        
 
         // Serialize the data in the form
         var serializedData = $form.serialize();
@@ -38,11 +42,13 @@ $(function(){
         // Disabled form elements will not be serialized.
         $inputs.prop("disabled", true);
 
-        // Construct Request Body
-        var settings = {
+        /* -----------------------------------------------------------------------------------------------------------------------------------*/
+        /* -------------------------------------------------------- Get the sessionID --------------------------------------------------------*/
+        /* -----------------------------------------------------------------------------------------------------------------------------------*/
+        var getSessionIDSettings = {
             async: true,
             crossDomain: true,
-            url: "https://35.233.128.50",
+            url: "http://35.233.128.50",
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -53,27 +59,45 @@ $(function(){
             data: "{\n\t\"jsonrpc\" : \"2.0\",\n\t\"method\" : \"eth_sessionStart\",\n\t\"params\" : [],\n\t\"id\" : 74\n}"
         }
 
-        // // Fire off the request to /form.php
-        // request = $.ajax({
-        //     url: "/form.php",
-        //     type: "post",
-        //     data: serializedData
-        // });
-
-        request = $.ajax(settings);
+        getSessionIDRequest = $.ajax(getSessionIDSettings);
 
         // Callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){
-            $(".loader").css("display", "none");
-            $("#qrcode").css("display", "block");
-            console.log("Hooray, it worked!");
+        getSessionIDRequest.done(function (response, textStatus, jqXHR){
+            console.log("Successfully retrieved session ID");
             console.log(JSON.stringify(response));
-            $('#qrcode').qrcode(JSON.stringify(response)); //Only takes string input
+            sessionID = response.sessionID;
+
+            /* -----------------------------------------------------------------------------------------------------------------------------------*/
+            /* -------------------------------------------------------- Get the Challenge --------------------------------------------------------*/
+            /* -----------------------------------------------------------------------------------------------------------------------------------*/
+            // Construct Request Body
+            var regStartObj = {};
+            regStartObj["cmd"] = 1100;
+            var regStartMsg = {};
+            regStartMsg["appID"] = $appid.toString();
+            regStartMsg["userName"] = $username.toString();
+            regStartObj["message"] = regStartMsg;
+            regStartObj["sessionID"] = sessionID;
+            var settings = {
+                async: true,
+                crossDomain: true,
+                url: "http://35.233.128.50",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Cache-Control": "no-cache",
+                },
+                data: regStartObj
+            }
+
+            getChallengeRequest = $.ajax(settings);
         });
 
         // Callback handler that will be called on failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
+        getSessionIDRequest.fail(function (jqXHR, textStatus, errorxThrown){
             // Log the error to the console
+            console.error("Status :" + jqXHR.status);
             console.error(
                 "The following error occurred: "+
                 textStatus, errorThrown
@@ -82,13 +106,49 @@ $(function(){
 
         // Callback handler that will be called regardless
         // if the request failed or succeeded
-        request.always(function () {
+        getSessionIDRequest.always(function () {
+            // Reenable the inputs
+            $inputs.prop("disabled", false);
+        });
+
+
+        // Callback handler that will be called on success
+        getChallengeRequest.done(function (response, textStatus, jqXHR){
+            $(".loader").css("display", "none");
+            $("#qrcode").css("display", "block");
+            console.log("Hooray, it worked!");
+            console.log(JSON.stringify(response));
+
+            var jsonData = {};
+            jsonData["cmd"] = 1100;
+            jsonData["appID"] = $appid.toString();
+            jsonData["challenge"] = response.challenge;
+            jsonData["sessionID"] = sessionID;
+            jsonData["counter"] = 0;
+
+            $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
+        });
+
+        // Callback handler that will be called on failure
+        getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
+            // Log the error to the console
+            console.error("Status :" + jqXHR.status);
+            console.error(
+                "The following error occurred: "+
+                textStatus, errorThrown
+            );
+        });
+
+        // Callback handler that will be called regardless
+        // if the request failed or succeeded
+        getChallengeRequest.always(function () {
             // Reenable the inputs
             $inputs.prop("disabled", false);
         });
 
     });
-    
+
+    // Login(Authorization) Event
     $("#sign").submit(function(event){
 
         // Prevent default posting of form - put here to work in case of errors
@@ -99,17 +159,22 @@ $(function(){
         $(".loader").css("display", "block");
 
         // Abort any pending request
-        if (request) {
-            request.abort();
+        if (getChallengeRequest) {
+            getChallengeRequest.abort();
         }
-        // setup some local variables
+        if (getSessionIDRequest) {
+            getSessionIDRequest.abort();
+        }
+
+        // Local Variables
         var $form = $(this);
+        var sessionID;
 
         // Let's select and cache all the fields
         var $appid = $form.find("[name='appid']");
         $appid[0].value = window.location.protocol + "//" + window.location.host + "/";
-        
         var $inputs = $form.find("[name='username'],[name='mode'],[name='appid']");
+        var $username = $form.find("[name='username']");
         console.info($inputs);
 
         // Serialize the data in the form
@@ -120,25 +185,62 @@ $(function(){
         // Disabled form elements will not be serialized.
         $inputs.prop("disabled", true);
 
-        // Fire off the request to /form.php
-        request = $.ajax({
-            url: "/form.php",
-            type: "post",
-            data: serializedData
-        });
+        /* -----------------------------------------------------------------------------------------------------------------------------------*/
+        /* -------------------------------------------------------- Get the sessionID --------------------------------------------------------*/
+        /* -----------------------------------------------------------------------------------------------------------------------------------*/
+        var getSessionIDSettings = {
+            async: true,
+            crossDomain: true,
+            url: "http://35.233.128.50",
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Cache-Control": "no-cache",
+            },
+            processData: false,
+            data: "{\n\t\"jsonrpc\" : \"2.0\",\n\t\"method\" : \"eth_sessionStart\",\n\t\"params\" : [],\n\t\"id\" : 74\n}"
+        }
+
+        getSessionIDRequest = $.ajax(getSessionIDSettings);
 
         // Callback handler that will be called on success
-        request.done(function (response, textStatus, jqXHR){
-            $(".loader").css("display", "none");
-            $("#qrcode").css("display", "block");
-            console.log("Hooray, it worked!");
+        getSessionIDRequest.done(function (response, textStatus, jqXHR){
+            console.log("Successfully retrieved session ID");
             console.log(JSON.stringify(response));
-            $('#qrcode').qrcode(JSON.stringify(response)); //Only takes string input
+            sessionID = response.sessionID;
+
+            /* -----------------------------------------------------------------------------------------------------------------------------------*/
+            /* -------------------------------------------------------- Get the Challenge --------------------------------------------------------*/
+            /* -----------------------------------------------------------------------------------------------------------------------------------*/
+            // Construct Request Body
+            var regStartObj = {};
+            regStartObj["cmd"] = 1102;
+            var regStartMsg = {};
+            regStartMsg["appID"] = $appid.toString();
+            regStartMsg["userName"] = $username.toString();
+            regStartObj["message"] = regStartMsg;
+            regStartObj["sessionID"] = sessionID;
+            var settings = {
+                async: true,
+                crossDomain: true,
+                url: "http://35.233.128.50",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Cache-Control": "no-cache",
+                },
+                data: regStartObj
+            }
+
+            getChallengeRequest = $.ajax(settings);
         });
 
         // Callback handler that will be called on failure
-        request.fail(function (jqXHR, textStatus, errorThrown){
+        getSessionIDRequest.fail(function (jqXHR, textStatus, errorThrown){
             // Log the error to the console
+            console.error("Status :" + jqXHR.status);
             console.error(
                 "The following error occurred: "+
                 textStatus, errorThrown
@@ -147,7 +249,42 @@ $(function(){
 
         // Callback handler that will be called regardless
         // if the request failed or succeeded
-        request.always(function () {
+        getSessionIDRequest.always(function () {
+            // Reenable the inputs
+            $inputs.prop("disabled", false);
+        });
+
+
+        // Callback handler that will be called on success
+        getChallengeRequest.done(function (response, textStatus, jqXHR){
+            $(".loader").css("display", "none");
+            $("#qrcode").css("display", "block");
+            console.log("Hooray, it worked!");
+            console.log(JSON.stringify(response));
+
+            var jsonData = {};
+            jsonData["cmd"] = 1102;
+            jsonData["keyHandle"] = response.keyHandle;
+            jsonData["challenge"] = response.challenge;
+            jsonData["sessionID"] = sessionID;
+            jsonData["counter"] = response.counter;
+
+            $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
+        });
+
+        // Callback handler that will be called on failure
+        getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
+            // Log the error to the console
+            console.error("Status :" + jqXHR.status);
+            console.error(
+                "The following error occurred: "+
+                textStatus, errorThrown
+            );
+        });
+
+        // Callback handler that will be called regardless
+        // if the request failed or succeeded
+        getChallengeRequest.always(function () {
             // Reenable the inputs
             $inputs.prop("disabled", false);
         });
