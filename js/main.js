@@ -236,7 +236,7 @@ $(function(){
                     "Accept": "application/json",
                     "Cache-Control": "no-cache",
                 },
-                data: regStartObj
+                data: JSON.stringify(regStartObj)
             }
 
             getChallengeRequest = $.ajax(settings);
