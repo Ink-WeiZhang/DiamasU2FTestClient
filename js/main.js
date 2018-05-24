@@ -74,8 +74,8 @@ $(function(){
             var regStartObj = {};
             regStartObj["cmd"] = 1100;
             var regStartMsg = {};
-            regStartMsg["appID"] = $appid.toString();
-            regStartMsg["userName"] = $username.toString();
+            regStartMsg["appID"] = $appid.val();
+            regStartMsg["userName"] = $username.val();
             regStartMsg["sessionID"] = sessionID;
             regStartObj["message"] = regStartMsg;
             var settings = {
@@ -102,7 +102,7 @@ $(function(){
 
                 var jsonData = {};
                 jsonData["cmd"] = 1100;
-                jsonData["appID"] = $appid.toString();
+                jsonData["appID"] = $appid.val();
                 jsonData["challenge"] = response.challenge;
                 jsonData["sessionID"] = sessionID;
                 jsonData["counter"] = 0;
@@ -111,7 +111,7 @@ $(function(){
             });
 
             // Callback handler that will be called on failure
-            getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
+            getChallengeRequest.fail(function (jqXHR, textStatus, errorThrown){
                 // Log the error to the console
                 console.error("Status :" + jqXHR.status);
                 console.error(
@@ -219,10 +219,11 @@ $(function(){
             var regStartObj = {};
             regStartObj["cmd"] = 1102;
             var regStartMsg = {};
-            regStartMsg["appID"] = $appid.toString();
-            regStartMsg["userName"] = $username.toString();
+            regStartMsg["appID"] = $appid.val();
+            regStartMsg["userName"] = $username.val();
+            regStartMsg["sessionID"] = sessionID;
             regStartObj["message"] = regStartMsg;
-            regStartObj["sessionID"] = sessionID;
+
             var settings = {
                 async: true,
                 crossDomain: true,
@@ -237,6 +238,40 @@ $(function(){
             }
 
             getChallengeRequest = $.ajax(settings);
+            
+            // Callback handler that will be called on success
+            getChallengeRequest.done(function (response, textStatus, jqXHR){
+                $(".loader").css("display", "none");
+                $("#qrcode").css("display", "block");
+                console.log("Hooray, it worked!");
+                console.log(JSON.stringify(response));
+
+                var jsonData = {};
+                jsonData["cmd"] = 1102;
+                jsonData["keyHandle"] = response.keyHandle;
+                jsonData["challenge"] = response.challenge;
+                jsonData["sessionID"] = sessionID;
+                jsonData["counter"] = response.counter;
+
+                $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
+            });
+
+            // Callback handler that will be called on failure
+            getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
+                // Log the error to the console
+                console.error("Status :" + jqXHR.status);
+                console.error(
+                    "The following error occurred: "+
+                    textStatus, errorThrown
+                );
+            });
+
+            // Callback handler that will be called regardless
+            // if the request failed or succeeded
+            getChallengeRequest.always(function () {
+                // Reenable the inputs
+                $inputs.prop("disabled", false);
+            });
         });
 
         // Callback handler that will be called on failure
@@ -257,39 +292,7 @@ $(function(){
         });
 
 
-        // Callback handler that will be called on success
-        getChallengeRequest.done(function (response, textStatus, jqXHR){
-            $(".loader").css("display", "none");
-            $("#qrcode").css("display", "block");
-            console.log("Hooray, it worked!");
-            console.log(JSON.stringify(response));
 
-            var jsonData = {};
-            jsonData["cmd"] = 1102;
-            jsonData["keyHandle"] = response.keyHandle;
-            jsonData["challenge"] = response.challenge;
-            jsonData["sessionID"] = sessionID;
-            jsonData["counter"] = response.counter;
-
-            $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
-        });
-
-        // Callback handler that will be called on failure
-        getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
-            // Log the error to the console
-            console.error("Status :" + jqXHR.status);
-            console.error(
-                "The following error occurred: "+
-                textStatus, errorThrown
-            );
-        });
-
-        // Callback handler that will be called regardless
-        // if the request failed or succeeded
-        getChallengeRequest.always(function () {
-            // Reenable the inputs
-            $inputs.prop("disabled", false);
-        });
 
     });
 });
