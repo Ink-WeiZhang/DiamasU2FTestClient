@@ -92,6 +92,40 @@ $(function(){
             }
 
             getChallengeRequest = $.ajax(settings);
+            
+            // Callback handler that will be called on success
+            getChallengeRequest.done(function (response, textStatus, jqXHR){
+                $(".loader").css("display", "none");
+                $("#qrcode").css("display", "block");
+                console.log("Hooray, it worked!");
+                console.log(JSON.stringify(response));
+
+                var jsonData = {};
+                jsonData["cmd"] = 1100;
+                jsonData["appID"] = $appid.toString();
+                jsonData["challenge"] = response.challenge;
+                jsonData["sessionID"] = sessionID;
+                jsonData["counter"] = 0;
+
+                $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
+            });
+
+            // Callback handler that will be called on failure
+            getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
+                // Log the error to the console
+                console.error("Status :" + jqXHR.status);
+                console.error(
+                    "The following error occurred: "+
+                    textStatus, errorThrown
+                );
+            });
+
+            // Callback handler that will be called regardless
+            // if the request failed or succeeded
+            getChallengeRequest.always(function () {
+                // Reenable the inputs
+                $inputs.prop("disabled", false);
+            });
         });
 
         // Callback handler that will be called on failure
@@ -112,39 +146,7 @@ $(function(){
         });
 
 
-        // Callback handler that will be called on success
-        getChallengeRequest.done(function (response, textStatus, jqXHR){
-            $(".loader").css("display", "none");
-            $("#qrcode").css("display", "block");
-            console.log("Hooray, it worked!");
-            console.log(JSON.stringify(response));
-
-            var jsonData = {};
-            jsonData["cmd"] = 1100;
-            jsonData["appID"] = $appid.toString();
-            jsonData["challenge"] = response.challenge;
-            jsonData["sessionID"] = sessionID;
-            jsonData["counter"] = 0;
-
-            $('#qrcode').qrcode(JSON.stringify(jsonData)); //Only takes string input
-        });
-
-        // Callback handler that will be called on failure
-        getChallengeRequest.fail(function (jqXHR, textStatus, errorxThrown){
-            // Log the error to the console
-            console.error("Status :" + jqXHR.status);
-            console.error(
-                "The following error occurred: "+
-                textStatus, errorThrown
-            );
-        });
-
-        // Callback handler that will be called regardless
-        // if the request failed or succeeded
-        getChallengeRequest.always(function () {
-            // Reenable the inputs
-            $inputs.prop("disabled", false);
-        });
+        
 
     });
 
