@@ -212,7 +212,7 @@ $(function(){
         getSessionIDRequest.done(function (response, textStatus, jqXHR){
             console.log("Successfully retrieved session ID");
             console.log(JSON.stringify(response));
-            sessionID = response.sessionID;
+            sessionID = response.result;
 
             /* -----------------------------------------------------------------------------------------------------------------------------------*/
             /* -------------------------------------------------------- Get the Challenge --------------------------------------------------------*/
@@ -229,7 +229,7 @@ $(function(){
             var settings = {
                 async: true,
                 crossDomain: true,
-                url: "http://35.233.128.50",
+                url: "https://35.233.128.50",
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -245,7 +245,7 @@ $(function(){
             getChallengeRequest.done(function (response, textStatus, jqXHR){
                 $(".loader").css("display", "none");
                 $("#qrcode").css("display", "block");
-                console.log("Hooray, it worked!");
+                console.log("Hooray, it worked! - Authentication Request");
                 console.log(JSON.stringify(response));
 
                 var jsonData = {};
