@@ -65,7 +65,7 @@ $(function(){
         getSessionIDRequest.done(function (response, textStatus, jqXHR){
             console.log("Successfully retrieved session ID");
             console.log(JSON.stringify(response));
-            sessionID = response.sessionID;
+            sessionID = response.result;
 
             /* -----------------------------------------------------------------------------------------------------------------------------------*/
             /* -------------------------------------------------------- Get the Challenge --------------------------------------------------------*/
@@ -76,12 +76,12 @@ $(function(){
             var regStartMsg = {};
             regStartMsg["appID"] = $appid.toString();
             regStartMsg["userName"] = $username.toString();
+            regStartMsg["sessionID"] = sessionID;
             regStartObj["message"] = regStartMsg;
-            regStartObj["sessionID"] = sessionID;
             var settings = {
                 async: true,
                 crossDomain: true,
-                url: "http://35.233.128.50",
+                url: "https://35.233.128.50",
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
