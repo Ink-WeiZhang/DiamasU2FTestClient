@@ -90,7 +90,7 @@ $(function(){
                     "Cache-Control": "no-cache",
                 },
                 processData: false,
-                data: JSON.stringify(regStartObj);
+                data: JSON.stringify(regStartObj)
             }
 
             getChallengeRequest = $.ajax(settings);
