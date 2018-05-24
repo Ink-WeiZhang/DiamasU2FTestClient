@@ -75,7 +75,7 @@ $(function(){
             regStartObj["cmd"] = 1100;
             var regStartMsg = {};
             regStartMsg["appID"] = $appid.val();
-            regStartMsg["userName"] = $username.val();
+            regStartMsg["username"] = $username.val();
             regStartMsg["sessionID"] = sessionID;
             regStartObj["message"] = regStartMsg;
             var settings = {
@@ -83,11 +83,13 @@ $(function(){
                 crossDomain: true,
                 url: "https://35.233.128.50",
                 method: "POST",
+                dataType: 'json',
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                     "Cache-Control": "no-cache",
                 },
+                processData: false,
                 data: regStartObj
             }
 
@@ -220,7 +222,7 @@ $(function(){
             regStartObj["cmd"] = 1102;
             var regStartMsg = {};
             regStartMsg["appID"] = $appid.val();
-            regStartMsg["userName"] = $username.val();
+            regStartMsg["username"] = $username.val();
             regStartMsg["sessionID"] = sessionID;
             regStartObj["message"] = regStartMsg;
 
